@@ -112,7 +112,9 @@ def seniormost(file):
 
 st.title("Daily summary of pending FoCs")
 
-uploaded_file = st.file_uploader("Upload file", type = ['xlsx'])
+uploaded_file = st.file_uploader("Upload file"
+                                 # , type = ['xlsx']
+                                )
 
 st.title("Seniormost")
 st.table(seniormost(uploaded_file))
