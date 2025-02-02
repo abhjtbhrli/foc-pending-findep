@@ -110,17 +110,20 @@ def seniormost(file):
 
   return df3
 
-st.title("Pending FoC report generator")
+st.title("Pending FoCs in Finance - report generator")
 
 uploaded_file = st.file_uploader("Upload file"
                                  , type = ['xlsx']
                                 )
 
-st.title("Seniormost")
+st.heading("Senior Most")
 try:
   st.dataframe(seniormost(uploaded_file))
 except ValueError:
-  st.write("Upload file")
+  st.write("*Upload file to generate report* :scroll:")
 
-st.title("All")
-st.dataframe(all_pending(uploaded_file))
+st.heading("All (including Senior Most)")
+try:
+  st.dataframe(all_pending(uploaded_file))
+except ValueError:
+  st.write("*Upload file to generate report* :scroll:")
