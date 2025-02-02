@@ -116,14 +116,14 @@ uploaded_file = st.file_uploader("Upload file"
                                  , type = ['xlsx']
                                 )
 
-st.heading("Senior Most")
+st.header("Senior Most")
 try:
   st.dataframe(seniormost(uploaded_file))
-except:
+except ValueError:
   st.write("*Upload file to generate report* :scroll:")
 
-st.heading("All (including Senior Most)")
+st.header("All (including Senior Most)")
 try:
   st.dataframe(all_pending(uploaded_file))
-except:
+except ValueError:
   st.write("*Upload file to generate report* :scroll:")
