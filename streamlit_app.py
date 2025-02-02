@@ -117,7 +117,10 @@ uploaded_file = st.file_uploader("Upload file"
                                 )
 
 st.title("Seniormost")
-st.dataframe(seniormost(uploaded_file))
+try:
+  st.dataframe(seniormost(uploaded_file))
+except ValueError:
+  st.write("Upload file")
 
 st.title("All")
 st.dataframe(all_pending(uploaded_file))
