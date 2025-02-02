@@ -110,14 +110,14 @@ def seniormost(file):
 
   return df3
 
-st.title("Daily summary of pending FoCs")
+st.title("Pending FoC report generator")
 
 uploaded_file = st.file_uploader("Upload file"
-                                 # , type = ['xlsx']
+                                 , type = ['xlsx']
                                 )
 
 st.title("Seniormost")
-st.table(seniormost(uploaded_file))
+st.dataframe(seniormost(uploaded_file))
 
 st.title("All")
-st.table(all_pending(uploaded_file))
+st.dataframe(all_pending(uploaded_file))
