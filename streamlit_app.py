@@ -34,7 +34,7 @@ def all_pending(file):
                                                                                                                'EE',
                                                                                                                np.where(pend['SCHEME CODE'].isin(EE_list),
                                                                                                                         'EE (CS + SS)',
-                                                                                                                        'Others'))))))))
+                                                                                                                        pend['SCHEME CODE']))))))))
   pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
   pend['MH'] = pd.to_numeric(pend['MH'])
   pend['Rev-Cap'] = np.where((pend['MH']<3999) & (pend['MH']>=2000),
@@ -88,7 +88,7 @@ def seniormost(file):
                                                                                                                'EE',
                                                                                                                np.where(pend['SCHEME CODE'].isin(EE_list),
                                                                                                                         'EE (CS + SS)',
-                                                                                                                        'Others'))))))))
+                                                                                                                        pend['SCHEME CODE']))))))))
   pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
   pend['MH'] = pd.to_numeric(pend['MH'])
   pend['Rev-Cap'] = np.where((pend['MH']<3999) & (pend['MH']>=2000),
