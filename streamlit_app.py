@@ -2,9 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-def highlight_row(row):
-    return ['font-weight: bold' if row.name == len(df) - 1 else '' for _ in row]
-
 st.set_page_config(
         page_title="Pending FoCs in Finance - report generator",
 )
@@ -67,6 +64,10 @@ def all_pending(file):
   
   df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)', 'Capital (Cr.)']
   df3.fillna('', inplace=True)
+
+  def highlight_row(row):
+    return ['font-weight: bold' if row.name == df3.index[-1] else '' for _ in row]
+  
   df3 = df3.style.apply(highlight_row, axis=1)
 
   return df3
@@ -129,6 +130,9 @@ def seniormost(file):
   
   df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)', 'Capital (Cr.)']
   df3.fillna('', inplace=True)
+
+  def highlight_row(row):
+    return ['font-weight: bold' if row.name == df3.index[-1] else '' for _ in row]
   df3 = df3.style.apply(highlight_row, axis=1)
         
   return df3
