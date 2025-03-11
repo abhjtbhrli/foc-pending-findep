@@ -111,12 +111,12 @@ def seniormost(file):
   df1 = df1[['SCHEME NAME2', 'DEPARTMENT NAME2', 'REQUESTED AMOUNT']]
   dfx1 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['SCHEME NAME2']!='SOPD') & (pend['Rev-Cap']=='Capital')].groupby(['SCHEME NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
   dfx1.columns = ['SCHEME NAME2', 'Capital']
-  df1 = df1.merge(dfx1, on='SCHEME NAME2')
+  df1 = df1.merge(dfx1, on='SCHEME NAME2', how='left')
 
   df2 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['SCHEME NAME2']=='SOPD')].groupby(['SCHEME NAME2', 'DEPARTMENT NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
   dfx2 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['SCHEME NAME2']=='SOPD') & (pend['Rev-Cap']=='Capital')].groupby(['SCHEME NAME2', 'DEPARTMENT NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
   dfx2.columns = ['SCHEME NAME2', 'DEPARTMENT NAME2', 'Capital']
-  df2 = df2.merge(dfx2, on=['SCHEME NAME2', 'DEPARTMENT NAME2'])
+  df2 = df2.merge(dfx2, on=['SCHEME NAME2', 'DEPARTMENT NAME2'], how='left')
 
   df3 = pd.concat([df1, df2], ignore_index=True).sort_values('SCHEME NAME2')
   df3.index = np.arange(len(df3))
