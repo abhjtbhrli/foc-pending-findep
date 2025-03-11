@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+def highlight_row(row):
+    return ['font-weight: bold' if row.name == len(df) - 1 else '' for _ in row]
+
 st.set_page_config(
         page_title="Pending FoCs in Finance - report generator",
 )
@@ -60,10 +63,11 @@ def all_pending(file):
   
   df3 = pd.concat([df1, df2], ignore_index=True).sort_values('SCHEME NAME2')
   df3.index = np.arange(len(df3))
-  df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2), '']
-  df3.loc[len(df3)] = ['Capital', '', '', pend[(pend['SCHEME NAME2']!='CSS') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
+  df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2), pend[(pend['SCHEME NAME2']!='CSS') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
+  
   df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)', 'Capital (Cr.)']
   df3.fillna('', inplace=True)
+  df3 = df3.style.apply(highlight_row, axis=1)
 
   return df3
 
@@ -121,12 +125,14 @@ def seniormost(file):
 
   df3 = pd.concat([df1, df2], ignore_index=True).sort_values('SCHEME NAME2')
   df3.index = np.arange(len(df3))
-  df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2), '']
-  df3.loc[len(df3)] = ['Capital', '', '', pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
+  df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2), pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
+  
   df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)', 'Capital (Cr.)']
   df3.fillna('', inplace=True)
+  df3 = df3.style.apply(highlight_row, axis=1)
         
   return df3
+
 
 st.title("Pending FoCs in Finance - report generator")
 
