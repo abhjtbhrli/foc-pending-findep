@@ -122,7 +122,7 @@ def seniormost(file):
   df3.index = np.arange(len(df3))
   df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2), '']
   df3.loc[len(df3)] = ['Capital', '', '', pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
-  df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)']
+  df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)', 'Capital (Cr.)']
 
   return df3
 
