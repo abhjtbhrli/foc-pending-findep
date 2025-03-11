@@ -49,14 +49,20 @@ def all_pending(file):
   df1 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['SCHEME NAME2']!='SOPD')].groupby(['SCHEME NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
   df1['DEPARTMENT NAME2'] = ''
   df1 = df1[['SCHEME NAME2', 'DEPARTMENT NAME2', 'REQUESTED AMOUNT']]
+  dfx1 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['SCHEME NAME2']!='SOPD') & (pend['Rev-Cap']=='Capital')].groupby(['SCHEME NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
+  dfx1.columns = ['SCHEME NAME2', 'Capital']
+  df1 = df1.merge(dfx1, on='SCHEME NAME2')
 
   df2 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['SCHEME NAME2']=='SOPD')].groupby(['SCHEME NAME2', 'DEPARTMENT NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
-
+  dfx2 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['SCHEME NAME2']=='SOPD') & (pend['Rev-Cap']=='Capital')].groupby(['SCHEME NAME2', 'DEPARTMENT NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
+  dfx2.columns = ['SCHEME NAME2', 'DEPARTMENT NAME2', 'Capital']
+  df2 = df2.merge(dfx2, on=['SCHEME NAME2', 'DEPARTMENT NAME2'])
+  
   df3 = pd.concat([df1, df2], ignore_index=True).sort_values('SCHEME NAME2')
   df3.index = np.arange(len(df3))
-  df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2)]
-  df3.loc[len(df3)] = ['Capital', '', pend[(pend['SCHEME NAME2']!='CSS') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
-  df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)']
+  df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2), '']
+  df3.loc[len(df3)] = ['Capital', '', '', pend[(pend['SCHEME NAME2']!='CSS') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
+  df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)', 'Capital (Cr.)']
 
   return df3
 
@@ -103,13 +109,19 @@ def seniormost(file):
   df1 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['SCHEME NAME2']!='SOPD')].groupby(['SCHEME NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
   df1['DEPARTMENT NAME2'] = ''
   df1 = df1[['SCHEME NAME2', 'DEPARTMENT NAME2', 'REQUESTED AMOUNT']]
+  dfx1 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['SCHEME NAME2']!='SOPD') & (pend['Rev-Cap']=='Capital')].groupby(['SCHEME NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
+  dfx1.columns = ['SCHEME NAME2', 'Capital']
+  df1 = df1.merge(dfx1, on='SCHEME NAME2')
 
   df2 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['SCHEME NAME2']=='SOPD')].groupby(['SCHEME NAME2', 'DEPARTMENT NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
+  dfx2 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['SCHEME NAME2']=='SOPD') & (pend['Rev-Cap']=='Capital')].groupby(['SCHEME NAME2', 'DEPARTMENT NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
+  dfx2.columns = ['SCHEME NAME2', 'DEPARTMENT NAME2', 'Capital']
+  df2 = df2.merge(dfx2, on=['SCHEME NAME2', 'DEPARTMENT NAME2'])
 
   df3 = pd.concat([df1, df2], ignore_index=True).sort_values('SCHEME NAME2')
   df3.index = np.arange(len(df3))
-  df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2)]
-  df3.loc[len(df3)] = ['Capital', '', pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
+  df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2), '']
+  df3.loc[len(df3)] = ['Capital', '', '', pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
   df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)']
 
   return df3
