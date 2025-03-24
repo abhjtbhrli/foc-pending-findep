@@ -15,9 +15,18 @@ def all_pending(file):
   pend = pend[2:]
   pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department']), 'PWD', 'Non PWD')
   SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS']
+  # RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS']
+  RIDF_list = ['RIDF-LS', 'WIF-LS', 'UIDF-LS']
   TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-FFC', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
   EE_list = ['EE-CS', 'EE-SS']
+
+  pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
+  pend['MH'] = pd.to_numeric(pend['MH'])
+  pend['Rev-Cap'] = np.where((pend['MH']<3999) & (pend['MH']>=2000),
+                           'Revenue',
+                           np.where((pend['MH']<5999) & (pend['MH']>=4000),
+                                    'Capital',
+                                    'Loans & Advances'))
   pend['SCHEME NAME2'] = np.where(pend['SCHEME CODE'].isin(['CSS', 'SOPD-SS']),
                                 'CSS',
                                 np.where(pend['SCHEME CODE'].isin(['EAP', 'EAP-SS']),
@@ -28,20 +37,14 @@ def all_pending(file):
                                                                                     'RIDF',
                                                                                     np.where(pend['SCHEME CODE'].isin(SOPD_list),
                                                                                              'SOPD',
-                                                                                             np.where(pend['SCHEME CODE'].isin(TG_list),
+                                                                                             np.where((pend['SCHEME CODE'].isin(TG_list)) & (pend['MH']=='Capital'),
                                                                                                       'TG',
                                                                                                       np.where(pend['SCHEME CODE']=='EE',
                                                                                                                'EE',
                                                                                                                np.where(pend['SCHEME CODE'].isin(EE_list),
                                                                                                                         'EE (CS + SS)',
                                                                                                                         pend['SCHEME CODE']))))))))
-  pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
-  pend['MH'] = pd.to_numeric(pend['MH'])
-  pend['Rev-Cap'] = np.where((pend['MH']<3999) & (pend['MH']>=2000),
-                           'Revenue',
-                           np.where((pend['MH']<5999) & (pend['MH']>=4000),
-                                    'Capital',
-                                    'Loans & Advances'))
+  
   SENIORMOST_list = ['Mr.Dilip Kumar BorahIAS,Secretary', 'Mr.JayantNarlikar , IAS ,Commissioner & Secretary', 'Mr.Hemanta Kumar Dewri,Special Secretary']
   pend['Hierarchy'] = np.where(pend['HELD BY'].isin(SENIORMOST_list), 'Seniormost', 'Non Seniormost')
   pend['REQUESTED AMOUNT'] = pend['REQUESTED AMOUNT'].apply(lambda x:x/100)
@@ -76,9 +79,18 @@ def seniormost(file):
   pend = pend[2:]
   pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department']), 'PWD', 'Non PWD')
   SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS']
+  # RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS']
+  RIDF_list = ['RIDF-LS', 'WIF-LS', 'UIDF-LS']
   TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-FFC', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
   EE_list = ['EE-CS', 'EE-SS']
+
+  pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
+  pend['MH'] = pd.to_numeric(pend['MH'])
+  pend['Rev-Cap'] = np.where((pend['MH']<3999) & (pend['MH']>=2000),
+                           'Revenue',
+                           np.where((pend['MH']<5999) & (pend['MH']>=4000),
+                                    'Capital',
+                                    'Loans & Advances'))
   pend['SCHEME NAME2'] = np.where(pend['SCHEME CODE'].isin(['CSS', 'SOPD-SS']),
                                 'CSS',
                                 np.where(pend['SCHEME CODE'].isin(['EAP', 'EAP-SS']),
@@ -89,20 +101,14 @@ def seniormost(file):
                                                                                     'RIDF',
                                                                                     np.where(pend['SCHEME CODE'].isin(SOPD_list),
                                                                                              'SOPD',
-                                                                                             np.where(pend['SCHEME CODE'].isin(TG_list),
+                                                                                             np.where((pend['SCHEME CODE'].isin(TG_list)) & (pend['MH']=='Capital'),
                                                                                                       'TG',
                                                                                                       np.where(pend['SCHEME CODE']=='EE',
                                                                                                                'EE',
                                                                                                                np.where(pend['SCHEME CODE'].isin(EE_list),
                                                                                                                         'EE (CS + SS)',
                                                                                                                         pend['SCHEME CODE']))))))))
-  pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
-  pend['MH'] = pd.to_numeric(pend['MH'])
-  pend['Rev-Cap'] = np.where((pend['MH']<3999) & (pend['MH']>=2000),
-                           'Revenue',
-                           np.where((pend['MH']<5999) & (pend['MH']>=4000),
-                                    'Capital',
-                                    'Loans & Advances'))
+  
   SENIORMOST_list = ['Mr.Dilip Kumar BorahIAS,Secretary', 'Mr.JayantNarlikar , IAS ,Commissioner & Secretary', 'Mr.Hemanta Kumar Dewri,Special Secretary']
   pend['Hierarchy'] = np.where(pend['HELD BY'].isin(SENIORMOST_list), 'Seniormost', 'Non Seniormost')
   pend['REQUESTED AMOUNT'] = pend['REQUESTED AMOUNT'].apply(lambda x:x/100)
