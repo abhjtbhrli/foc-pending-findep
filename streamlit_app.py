@@ -146,7 +146,7 @@ def css_ss(file):
   css_df = pd.read_excel(file, engine = "openpyxl")
   css_df.columns = css_df.iloc[1]
   css_df = css_df[2:]
-  css_df = css_df[css_df['SCHEME CODE'].isin(['CSS', 'SOPD-SS'])]
+  css_df = css_df[css_df['SCHEME CODE'].isin(['CSS'])]
   css_df['MH'] = css_df['HEAD OF ACCOUNT'].str.slice(0,4)
   css_df['MH'] = pd.to_numeric(css_df['MH'])
   css_df['Rev-Cap'] = np.where((css_df['MH']<3999) & (css_df['MH']>=2000),
@@ -157,7 +157,29 @@ def css_ss(file):
   css_df = css_df[['SCHEME CODE', 'Rev-Cap', 'DEPARTMENT NAME', 'SCHEME NAME', 'REQUESTED AMOUNT', 'HEAD OF ACCOUNT', 'PROPOSAL DATE']]
   css_df['REQUESTED AMOUNT'] = css_df['REQUESTED AMOUNT'].apply(lambda x:x/100).round(2)
   css_df = css_df.sort_values(by=['Rev-Cap', 'PROPOSAL DATE'], ascending=True).reset_index()
+  css_df = css_df[['SCHEME CODE', 'Rev-Cap', 'DEPARTMENT NAME', 'SCHEME NAME', 'REQUESTED AMOUNT', 'HEAD OF ACCOUNT', 'PROPOSAL DATE']]
   return css_df
+
+
+def sopd_ss(file):
+  import pandas as pd
+  import numpy as np
+  sopd_ss_df = pd.read_excel(file, engine = "openpyxl")
+  sopd_ss_df.columns = sopd_ss_df.iloc[1]
+  sopd_ss_df = sopd_ss_df[2:]
+  sopd_ss_df = sopd_ss_df[sopd_ss_df['SCHEME CODE'].isin(['SOPD-SS'])]
+  sopd_ss_df['MH'] = sopd_ss_df['HEAD OF ACCOUNT'].str.slice(0,4)
+  sopd_ss_df['MH'] = pd.to_numeric(sopd_ss_df['MH'])
+  sopd_ss_df['Rev-Cap'] = np.where((sopd_ss_df['MH']<3999) & (sopd_ss_df['MH']>=2000),
+                           'Revenue',
+                           np.where((sopd_ss_df['MH']<5999) & (sopd_ss_df['MH']>=4000),
+                                    'Capital',
+                                    'Loans & Advances'))
+  sopd_ss_df = sopd_ss_df[['SCHEME CODE', 'Rev-Cap', 'DEPARTMENT NAME', 'SCHEME NAME', 'REQUESTED AMOUNT', 'HEAD OF ACCOUNT', 'PROPOSAL DATE']]
+  sopd_ss_df['REQUESTED AMOUNT'] = sopd_ss_df['REQUESTED AMOUNT'].apply(lambda x:x/100).round(2)
+  sopd_ss_df = sopd_ss_df.sort_values(by=['Rev-Cap', 'PROPOSAL DATE'], ascending=True).reset_index()
+  sopd_ss_df = sopd_ss_df[['SCHEME CODE', 'Rev-Cap', 'DEPARTMENT NAME', 'SCHEME NAME', 'REQUESTED AMOUNT', 'HEAD OF ACCOUNT', 'PROPOSAL DATE']]
+  return sopd_ss_df
 
 st.title("Pending FoCs in Finance - report generator")
 
@@ -177,8 +199,14 @@ try:
 except ValueError:
   st.write("*Upload file to generate report* :scroll:")
 
-st.header("CSS and SOPD-SS details")
+st.header("CSS details")
 try:
   st.dataframe(css_ss(uploaded_file))
+except ValueError:
+  st.write("*Upload file to generate report* :scroll:")
+
+st.header("SOPD-SS details")
+try:
+  st.dataframe(sopd_ss(uploaded_file))
 except ValueError:
   st.write("*Upload file to generate report* :scroll:")
