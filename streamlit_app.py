@@ -158,6 +158,7 @@ def css_ss(file):
   css_df['REQUESTED AMOUNT'] = css_df['REQUESTED AMOUNT'].apply(lambda x:x/100).round(2)
   css_df = css_df.sort_values(by=['Rev-Cap', 'PROPOSAL DATE'], ascending=True).reset_index()
   css_df = css_df[['SCHEME CODE', 'Rev-Cap', 'DEPARTMENT NAME', 'SCHEME NAME', 'REQUESTED AMOUNT', 'HEAD OF ACCOUNT', 'PROPOSAL DATE']]
+  css_df.loc[len(css_df)] = ['Total', '', '', '', css_df['REQUESTED AMOUNT'].sum().round(2), '', ''] 
   return css_df
 
 
@@ -179,6 +180,7 @@ def sopd_ss(file):
   sopd_ss_df['REQUESTED AMOUNT'] = sopd_ss_df['REQUESTED AMOUNT'].apply(lambda x:x/100).round(2)
   sopd_ss_df = sopd_ss_df.sort_values(by=['Rev-Cap', 'PROPOSAL DATE'], ascending=True).reset_index()
   sopd_ss_df = sopd_ss_df[['SCHEME CODE', 'Rev-Cap', 'DEPARTMENT NAME', 'SCHEME NAME', 'REQUESTED AMOUNT', 'HEAD OF ACCOUNT', 'PROPOSAL DATE']]
+  sopd_ss_df.loc[len(sopd_ss_df)] = ['Total', '', '', '', sopd_ss_df['REQUESTED AMOUNT'].sum().round(2), '', '']
   return sopd_ss_df
 
 st.title("Pending FoCs in Finance - report generator")
