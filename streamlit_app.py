@@ -154,7 +154,9 @@ def css_ss(file):
                            np.where((css_df['MH']<5999) & (css_df['MH']>=4000),
                                     'Capital',
                                     'Loans & Advances'))
-  css_df = css_df[['DEPARTMENT NAME', 'SCHEME NAME', 'Rev-Cap', 'HEAD OF ACCOUNT', 'SCHEME CODE', 'REQUESTED AMOUNT', 'PROPOSAL DATE']]
+  css_df = css_df[['SCHEME CODE', 'Rev-Cap', 'DEPARTMENT NAME', 'SCHEME NAME', 'REQUESTED AMOUNT', 'HEAD OF ACCOUNT', 'PROPOSAL DATE']]
+  css_df['REQUESTED AMOUNT'] = css_df['REQUESTED AMOUNT'].apply(lambda x:x/100).round(2)
+  css_df = css_df.sort_values(by=['Rev-Cap', 'PROPOSAL DATE'], ascending=True).reset_index()
   return css_df
 
 st.title("Pending FoCs in Finance - report generator")
