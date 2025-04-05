@@ -140,6 +140,22 @@ def seniormost(file):
         
   return df3
 
+def css_ss(file):
+  import pandas as pd
+  import numpy as np
+  css_df = pd.read_excel(file, engine = "openpyxl")
+  css_df.columns = css_df.iloc[1]
+  css_df = css_df[2:]
+  css_df = css_df[css_df['SCHEME CODE'].isin(['CSS', 'SOPD-SS'])]
+  css_df['MH'] = css_df['HEAD OF ACCOUNT'].str.slice(0,4)
+  css_df['MH'] = pd.to_numeric(css_df['MH'])
+  css_df['Rev-Cap'] = np.where((css_df['MH']<3999) & (css_df['MH']>=2000),
+                           'Revenue',
+                           np.where((css_df['MH']<5999) & (css_df['MH']>=4000),
+                                    'Capital',
+                                    'Loans & Advances'))
+  css_df = css_df[['DEPARTMENT NAME', 'SCHEME NAME', 'Rev-Cap', 'HEAD OF ACCOUNT', 'SCHEME CODE', 'REQUESTED AMOUNT', 'PROPOSAL DATE']]
+  return css_df
 
 st.title("Pending FoCs in Finance - report generator")
 
@@ -156,5 +172,11 @@ except ValueError:
 st.header("All (including Senior Most)")
 try:
   st.dataframe(all_pending(uploaded_file))
+except ValueError:
+  st.write("*Upload file to generate report* :scroll:")
+
+st.header("CSS and SOPD-SS details")
+try:
+  st.dataframe(css_ss(uploaded_file))
 except ValueError:
   st.write("*Upload file to generate report* :scroll:")
