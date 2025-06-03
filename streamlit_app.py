@@ -146,7 +146,7 @@ def css_ss(file):
   css_df = pd.read_excel(file, engine = "openpyxl")
   css_df.columns = css_df.iloc[1]
   css_df = css_df[2:]
-  css_df = css_df[css_df['SCHEME CODE'].isin(['CSS'])]
+  css_df = css_df[css_df['SCHEME CODE'].isin(['CSS', 'TG-CFC'])]
   css_df['MH'] = css_df['HEAD OF ACCOUNT'].str.slice(0,4)
   css_df['MH'] = pd.to_numeric(css_df['MH'])
   css_df['Rev-Cap'] = np.where((css_df['MH']<3999) & (css_df['MH']>=2000),
@@ -201,7 +201,7 @@ try:
 except ValueError:
   st.write("*Upload file to generate report* :scroll:")
 
-st.header("CSS details")
+st.header("CSS & TG-CFC details")
 try:
   st.dataframe(css_ss(uploaded_file))
 except ValueError:
