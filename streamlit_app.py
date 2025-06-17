@@ -206,13 +206,13 @@ try:
   st.dataframe(css_ss(uploaded_file))
 except ValueError:
   st.write("*Upload file to generate report* :scroll:")
-except AttributeError:
-  st.write("*No CSS FoC pending right now*")
+except:
+  st.write("*No CSS or TG-CFC FoC pending right now*")
 
 st.header("SOPD-SS details")
 try:
   st.dataframe(sopd_ss(uploaded_file))
 except ValueError:
   st.write("*Upload file to generate report* :scroll:")
-except AttributeError:
+except:
   st.write("*No SOPD-SS FoC pending right now*")
