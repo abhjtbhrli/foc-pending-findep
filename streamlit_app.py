@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 st.set_page_config(
-        page_title="Pending FoCs in Finance - report generator",
+        page_title="CDM Ceiling reports",
 )
 
 def all_pending(file):
@@ -183,36 +183,48 @@ def sopd_ss(file):
   sopd_ss_df.loc[len(sopd_ss_df)] = ['', '', '', '', sopd_ss_df['REQUESTED AMOUNT'].sum().round(2), '', '']
   return sopd_ss_df
 
-st.title("Pending FoCs in Finance - report generator")
+st.title("CDM Ceiling reports")
+tab1, tab2 = st.tabs(["FoC pending", "FoC in pipeline"])
 
-uploaded_file = st.file_uploader("Upload file"
+with tab1:
+  uploaded_file = st.file_uploader("Upload Ceiling Pending file"
                                  , type = ['xlsx']
                                 )
 
-st.header("Senior Most")
-try:
-  st.dataframe(seniormost(uploaded_file))
-except ValueError:
-  st.write("*Upload file to generate report* :scroll:")
+  st.header("Senior Most")
+  try:
+    st.dataframe(seniormost(uploaded_file))
+  except ValueError:
+    st.write("*Upload file to generate report* :scroll:")
 
-st.header("All (including Senior Most)")
-try:
-  st.dataframe(all_pending(uploaded_file))
-except ValueError:
-  st.write("*Upload file to generate report* :scroll:")
+  st.header("All (including Senior Most)")
+  try:
+    st.dataframe(all_pending(uploaded_file))
+  except ValueError:
+    st.write("*Upload file to generate report* :scroll:")
 
-st.header("CSS & TG-CFC details")
-try:
-  st.dataframe(css_ss(uploaded_file))
-except ValueError:
-  st.write("*Upload file to generate report* :scroll:")
-except:
-  st.write("*No CSS or TG-CFC FoC pending right now*")
+  st.header("CSS & TG-CFC details")
+  try:
+    st.dataframe(css_ss(uploaded_file))
+  except ValueError:
+    st.write("*Upload file to generate report* :scroll:")
+  except:
+    st.write("*No CSS or TG-CFC FoC pending right now*")
 
-st.header("SOPD-SS details")
-try:
-  st.dataframe(sopd_ss(uploaded_file))
-except ValueError:
-  st.write("*Upload file to generate report* :scroll:")
-except:
-  st.write("*No SOPD-SS FoC pending right now*")
+  st.header("SOPD-SS details")
+  try:
+    st.dataframe(sopd_ss(uploaded_file))
+  except ValueError:
+    st.write("*Upload file to generate report* :scroll:")
+  except:
+    st.write("*No SOPD-SS FoC pending right now*")
+
+
+with tab2:
+  uploaded_file_approved = st.file_uploader("Upload Ceiling Approved file"
+                                 , type = ['xlsx']
+                                )
+
+  uploaded_file_foc_exp = st.file_uploader("Upload FoC expenditure bill wise file"
+                                 , type = ['csv']
+                                )
