@@ -11,11 +11,11 @@ def all_pending(file):
   import numpy as np
 
   pend = pd.read_excel(file, engine = "openpyxl")
-  pend.columns = pend.iloc[1]
+  pend.columns = pend.iloc[0].tolist()
   pend = pend[2:]
-  pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department']), 'PWD', 'Non PWD')
+  pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department', 'Public Works (Health and Education) Department']), 'PWD', 'Non PWD')
   SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS']
+  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
   TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-FFC', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL', 'TG-CFC']
   EE_list = ['EE-CS', 'EE-SS']
 
@@ -75,11 +75,11 @@ def seniormost(file):
   import numpy as np
 
   pend = pd.read_excel(file, engine = "openpyxl")
-  pend.columns = pend.iloc[1]
+  pend.columns = pend.iloc[0].tolist()
   pend = pend[2:]
-  pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department']), 'PWD', 'Non PWD')
+  pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department', 'Public Works (Health and Education) Department']), 'PWD', 'Non PWD')
   SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS']
+  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
   TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-FFC', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL', 'TG-CFC']
   EE_list = ['EE-CS', 'EE-SS']
 
@@ -144,7 +144,7 @@ def css_ss(file):
   import pandas as pd
   import numpy as np
   css_df = pd.read_excel(file, engine = "openpyxl")
-  css_df.columns = css_df.iloc[1]
+  css_df.columns = css_df.iloc[0].tolist()
   css_df = css_df[2:]
   css_df = css_df[css_df['SCHEME CODE'].isin(['CSS', 'TG-CFC'])]
   css_df['MH'] = css_df['HEAD OF ACCOUNT'].str.slice(0,4)
@@ -166,7 +166,7 @@ def sopd_ss(file):
   import pandas as pd
   import numpy as np
   sopd_ss_df = pd.read_excel(file, engine = "openpyxl")
-  sopd_ss_df.columns = sopd_ss_df.iloc[1]
+  sopd_ss_df.columns = sopd_ss_df.iloc[0].tolist()
   sopd_ss_df = sopd_ss_df[2:]
   sopd_ss_df = sopd_ss_df[sopd_ss_df['SCHEME CODE'].isin(['SOPD-SS'])]
   sopd_ss_df['MH'] = sopd_ss_df['HEAD OF ACCOUNT'].str.slice(0,4)
