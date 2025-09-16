@@ -220,6 +220,7 @@ def pipeline(file1, file2):
   focno = pd.read_csv(csv_url)
   exp_list = list(set(focno['FOC Number'].unique().tolist()+foc['Foc Number'].unique().tolist()))
   pipe['Exp'] = pipe['CEILING NO'].apply(lambda x:"Yes" if x in exp_list else "No")
+  
   rows_to_append = [[str(x)] for x in foc['Foc Number'].dropna().astype(str)]
   header = ws.row_values(1)
   col_idx = header.index("Foc Number") + 1
