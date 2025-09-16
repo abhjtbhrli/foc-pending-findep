@@ -8,7 +8,7 @@ st.set_page_config(
         page_title="CDM Ceiling reports",
 )
 
-SHEET_ID = "1FTGM7RlR6e6v-4nL29bxEAU3myFkpImD"
+SHEET_ID = "1yrNlRXU8Zub6_4DD8L_a1xi3sBHV1UsG0w3dkVSAvr8"
 GID = "862709843"   # your tab gid (string)
 
 creds = Credentials.from_service_account_info(
@@ -214,7 +214,7 @@ def pipeline(file1, file2):
   pipe['Excl'] = pipe['CEILING NO'].apply(lambda x:"Yes" if x in excl else "No")
 
   foc = pd.read_csv(file2)
-  sheet_id = "1FTGM7RlR6e6v-4nL29bxEAU3myFkpImD"
+  sheet_id = "1yrNlRXU8Zub6_4DD8L_a1xi3sBHV1UsG0w3dkVSAvr8"
   gid = "862709843"  # the tab gid from your URL
   csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
   focno = pd.read_csv(csv_url)
