@@ -218,7 +218,7 @@ def pipeline(file1, file2):
   gid = "862709843"  # the tab gid from your URL
   csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
   focno = pd.read_csv(csv_url)
-  exp_list = list(set(focno['FOC Number'].unique().tolist()+foc['Foc Number'].unique().tolist()))
+  exp_list = list(set(focno['Foc Number'].unique().tolist()+foc['Foc Number'].unique().tolist()))
   pipe['Exp'] = pipe['CEILING NO'].apply(lambda x:"Yes" if x in exp_list else "No")
   
   rows_to_append = [[str(x)] for x in foc['Foc Number'].dropna().astype(str)]
