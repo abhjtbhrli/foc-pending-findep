@@ -315,7 +315,10 @@ with tab2:
                                  , type = ['csv']
                                 )
   st.header("FoC in pipeline")
-  try:
-    st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))
-  except ValueError:
-    st.write("*Upload files to generate report* :scroll:")
+  if uploaded_file_approved is None or uploaded_file_foc_exp is None:
+        st.info("Please upload **both** files to generate the report.")
+  else:
+          try:
+                  st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))
+          except Exception as e:
+                  st.error(f"Could not generate report: {e}")
