@@ -1,10 +1,26 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from google.oauth2.service_account import Credentials
+import gspread
 
 st.set_page_config(
         page_title="CDM Ceiling reports",
 )
+
+SHEET_ID = "1FTGM7RlR6e6v-4nL29bxEAU3myFkpImD"
+GID = "862709843"   # your tab gid (string)
+
+creds = Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=["https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"]
+)
+gc = gspread.authorize(creds)
+sh = gc.open_by_key(SHEET_ID)
+
+# get worksheet by gid
+ws = next(ws for ws in sh.worksheets() if str(ws.id) == GID)
 
 def all_pending(file):
   import pandas as pd
@@ -183,6 +199,76 @@ def sopd_ss(file):
   sopd_ss_df.loc[len(sopd_ss_df)] = ['', '', '', '', sopd_ss_df['REQUESTED AMOUNT'].sum().round(2), '', '']
   return sopd_ss_df
 
+def pipeline(file1, file2):
+  import pandas as pd
+  import numpy as np
+  pipe = pd.read_excel(file1, engine = "openpyxl")
+  pipe.columns = pipe.iloc[0].tolist()
+  pipe = pipe[2:]
+  pipe['DH'] = pipe['HEAD OF ACCOUNT'].str[-5:]
+  pipe['MH'] = pipe['HEAD OF ACCOUNT'].str[:1]
+  pipe['ISSUED ON'] = pd.to_datetime(pipe['ISSUED ON'])
+  today = pd.to_datetime("today").normalize()
+  pipe["Days"] = (today - pipe["ISSUED ON"]).dt.days
+  excl = ['FIN/DIS/TAX/001/2025/1471', 'FIN/DIS/POL/001/2025/16629', 'FIN/KAM/POL/001/2025/16634', 'FIN/KAM/POL/001/2025/16633', 'FIN/KAM/POL/001/2025/16632', 'FIN/KAM/POL/001/2025/16631', 'FIN/KAM/POL/001/2025/16630', 'FIN/NLB/PWB/001/2025/13102', 'FIN/DIS/EE/025/2025/1715', 'FIN/DIS/EE/025/2025/1718', 'FIN/DIS/HS/017/2025/2066', 'FIN/DIS/HS/017/2025/2068', 'FIN/NGT/SCD/001/2025/1575', 'FIN/NGT/SWD/001/2025/4960', 'FIN/DIS/HS/017/2025/2075', 'FIN/DIS/HS/017/2025/2082', 'FIN/DIS/SAD/001/2025/4526', 'FIN/DIS/MDB/002/2025/1361', 'FIN/DIS/SCE/001/2025/1168', 'FIN/DIS/SCE/001/2025/1169', 'FIN/DIS/DMA/001/2025/047', 'FIN/DIS/DMA/001/2025/046', 'FIN/DIS/SAD/001/2025/4605', 'FIN/DIS/SAD/001/2025/4614', 'FIN/DIS/MDA/001/2025/1536', 'FIN/DIS/SAD/001/2025/4572', 'FIN/DIS/AGR/001/2025/1860', 'FIN/DIS/EE/025/2025/1730', 'FIN/DIS/HT/001/2025/1396', 'FIN/DIS/AGR/001/2025/1859', 'FIN/DIS/TRA/001/2025/1216']
+  pipe['Excl'] = pipe['CEILING NO'].apply(lambda x:"Yes" if x in excl else "No")
+
+  foc = pd.read_csv(file2)
+  sheet_id = "1FTGM7RlR6e6v-4nL29bxEAU3myFkpImD"
+  gid = "862709843"  # the tab gid from your URL
+  csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
+  focno = pd.read_csv(csv_url)
+  exp_list = list(set(focno['FOC Number'].unique().tolist()+foc['Foc Number'].unique().tolist()))
+  pipe['Exp'] = pipe['CEILING NO'].apply(lambda x:"Yes" if x in exp_list else "No")
+  rows_to_append = [[str(x)] for x in foc['Foc Number'].dropna().astype(str)]
+  header = ws.row_values(1)
+  col_idx = header.index("Foc Number") + 1
+  start_row = len(ws.get_all_values()) + 1
+  # write down the column (A1 range)
+  ws.update(
+      gspread.utils.rowcol_to_a1(start_row, col_idx),
+      rows_to_append
+  )
+
+  SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
+  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
+  TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-FFC', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL', 'TG-CFC']
+  CSS_list = ['CSS', 'SOPD-SS', 'EE-CS', 'EE-SS']
+  EAP_list = ['EAP', 'EAP-SS']
+  NIDA_list = ['NIDA-LS', 'NIDA-SS']
+  pipe['SCHEME CODE2'] = np.where(pipe['SCHEME CODE'].isin(SOPD_list),
+                                   'SOPD',
+                                   np.where(pipe['SCHEME CODE'].isin(RIDF_list),
+                                            'RIDF',
+                                            np.where(pipe['SCHEME CODE'].isin(TG_list),
+                                                     'TG',
+                                                     np.where(pipe['SCHEME CODE'].isin(CSS_list),
+                                                              'CSS',
+                                                              np.where(pipe['SCHEME CODE'].isin(EAP_list),
+                                                                       'EAP',
+                                                                       np.where(pipe['SCHEME CODE'].isin(NIDA_list),
+                                                                                'NIDA',
+                                                                                pipe['SCHEME CODE']))))))
+  pipe['Rev-Cap'] = np.where(pipe['MH'].isin(['2','3']),
+                             'Revenue',
+                             np.where(pipe['MH'].isin(['4','5']),
+                                      'Capital',
+                                      'Loans & Advances'))
+  pipe['APPROVED AMOUNT'] = pipe['APPROVED AMOUNT'].apply(lambda x:x/100).round(2)
+  pipex = pipe[['SCHEME CODE2', 'Rev-Cap', 'APPROVED AMOUNT','Days','Excl','Exp','DH']]
+  pipex = pipex[pipex['Days']<=15]
+  pipex = pipex[pipex['Exp']=='No']
+  pipex = pipex[pipex['Excl']=='No']
+  pipex_rep = pipex.groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
+  pipex_rep_cap = pipex[pipex['Rev-Cap']=='Capital'].groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
+  pipex_rep = pipex_rep.merge(pipex_rep_cap, how='left', on='SCHEME CODE2')
+  pipex_rep.fillna(0, inplace = True)
+  pipex_rep.columns = ['Scheme', 'Approved amount (Cr.)', 'Capital (Cr.)']
+
+  pipex_rep.loc[len(pipex_rep)] = ['Total', pipex_rep['Approved amount (Cr.)'].sum().round(2), pipex_rep['Capital (Cr.)'].sum().round(2)]
+
+  return pipex_rep
+
 st.title("CDM Ceiling reports")
 tab1, tab2 = st.tabs(["FoC pending", "FoC in pipeline"])
 
@@ -191,15 +277,15 @@ with tab1:
                                  , type = ['xlsx']
                                 )
 
-  st.header("Senior Most")
+  st.header("All FoC pending at Finance")
   try:
-    st.dataframe(seniormost(uploaded_file))
+    st.dataframe(all_pending(uploaded_file))
   except ValueError:
     st.write("*Upload file to generate report* :scroll:")
 
-  st.header("All (including Senior Most)")
+  st.header("FoC pending at Finance (at Senior Most level)")
   try:
-    st.dataframe(all_pending(uploaded_file))
+    st.dataframe(seniormost(uploaded_file))
   except ValueError:
     st.write("*Upload file to generate report* :scroll:")
 
@@ -228,3 +314,8 @@ with tab2:
   uploaded_file_foc_exp = st.file_uploader("Upload FoC expenditure bill wise file"
                                  , type = ['csv']
                                 )
+  st.header("FoC in pipeline")
+  try:
+    st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))
+  except ValueError:
+    st.write("*Upload files to generate report* :scroll:")
