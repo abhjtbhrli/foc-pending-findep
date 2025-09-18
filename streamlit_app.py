@@ -260,6 +260,7 @@ def pipeline(file1, file2):
   pipex = pipex[pipex['Days']<=15]
   pipex = pipex[pipex['Exp']=='No']
   pipex = pipex[pipex['Excl']=='No']
+  csv = pipex.to_csv(index=False).encode("utf-8")
   pipex_rep = pipex.groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
   pipex_rep_cap = pipex[pipex['Rev-Cap']=='Capital'].groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
   pipex_rep = pipex_rep.merge(pipex_rep_cap, how='left', on='SCHEME CODE2')
@@ -323,3 +324,9 @@ with tab2:
                   st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))
           except Exception as e:
                   st.error(f"Could not generate report: {e}")
+          st.download_button(
+                  label="⬇️ Download CSV",
+                  data=csv,
+                  file_name="foc_pipeline.csv",
+                  mime="text/csv",
+          )
