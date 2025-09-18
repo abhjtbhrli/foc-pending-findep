@@ -269,7 +269,7 @@ def pipeline(file1, file2):
 
   pipex_rep.loc[len(pipex_rep)] = ['Total', pipex_rep['Approved amount (Cr.)'].sum().round(2), pipex_rep['Capital (Cr.)'].sum().round(2)]
 
-  return pipex_rep
+  return pipex_rep, csv
 
 st.title("CDM Ceiling reports")
 tab1, tab2 = st.tabs(["FoC pending", "FoC in pipeline"])
@@ -321,10 +321,10 @@ with tab2:
         st.info("Please upload **both** files to generate the report.")
   else:
           try:
-                  st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))
+                  st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))[0]
                   st.download_button(
                   label="⬇️ Download CSV",
-                  data=csv,
+                  data=st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))[1],
                   file_name="foc_pipeline.csv",
                   mime="text/csv",
           )
