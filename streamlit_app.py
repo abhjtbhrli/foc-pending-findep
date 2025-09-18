@@ -322,11 +322,12 @@ with tab2:
   else:
           try:
                   st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))
-          except Exception as e:
-                  st.error(f"Could not generate report: {e}")
-          st.download_button(
+                  st.download_button(
                   label="⬇️ Download CSV",
                   data=csv,
                   file_name="foc_pipeline.csv",
                   mime="text/csv",
           )
+          except Exception as e:
+                  st.error(f"Could not generate report: {e}")
+          
