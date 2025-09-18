@@ -321,10 +321,11 @@ with tab2:
         st.info("Please upload **both** files to generate the report.")
   else:
           try:
-                  st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))[0]
+                  df1, df2 = pipeline(uploaded_file_approved, uploaded_file_foc_exp)
+                  st.dataframe(df1)
                   st.download_button(
                   label="⬇️ Download CSV",
-                  data=st.dataframe(pipeline(uploaded_file_approved, uploaded_file_foc_exp))[1],
+                  data=df2,
                   file_name="foc_pipeline.csv",
                   mime="text/csv",
           )
