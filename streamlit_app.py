@@ -248,7 +248,7 @@ def pipeline(file1, file2):
 'FIN/DIS/EE/025/2025/1736',
 'FIN/KAM/IWT/001/2025/1722',
 'FIN/DIS/AGR/001/2025/1859',
-'FIN/DIS/TRA/001/2025/1216']
+'FIN/DIS/TRA/001/2025/1216', 'FIN/DIS/DME/001/2025/2890', 'FIN/DIS/AGR/001/2025/1861']
 
   pipe['Excl'] = pipe['CEILING NO'].apply(lambda x:"Yes" if x in excl else "No")
 
@@ -294,7 +294,7 @@ def pipeline(file1, file2):
                              np.where(pipe['MH'].isin(['4','5']),
                                       'Capital',
                                       'Loans & Advances'))
-  pipe['APPROVED AMOUNT'] = pipe['APPROVED AMOUNT'].apply(lambda x:x/100).round(2)
+  pipe['APPROVED AMOUNT'] = pipe['APPROVED AMOUNT'].apply(lambda x:x/100)
   pipex = pipe[['SCHEME CODE2', 'Rev-Cap', 'APPROVED AMOUNT','Days','Excl','Exp','DH']]
   pipex = pipex[pipex['Days']<=15]
   pipex = pipex[pipex['Exp']=='No']
