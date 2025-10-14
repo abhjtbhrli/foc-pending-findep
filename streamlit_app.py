@@ -310,7 +310,11 @@ def pipeline(file1, file2):
 
   return pipex_rep, csv
 
-st.title("CDM Ceiling reports")
+st.markdown("""
+<h1 style='text-align: center;'>Ceiling Reports</h1>
+<p style='text-align: center; font-style: italic;'>Cash and Debt Management Cell</p>
+""", unsafe_allow_html=True)
+
 tab1, tab2 = st.tabs(["FoC pending", "FoC in pipeline"])
 
 with tab1:
