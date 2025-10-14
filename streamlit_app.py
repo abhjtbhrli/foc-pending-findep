@@ -312,7 +312,7 @@ def pipeline(file1, file2):
 
 st.markdown("""
 <h1 style='text-align: center;'>Ceiling Reports</h1>
-<p style='text-align: center; font-style: italic;'>Cash and Debt Management Cell</p>
+<p style='text-align: center; font-style: italic;'>Cash and Debt Management</p>
 """, unsafe_allow_html=True)
 
 tab1, tab2 = st.tabs(["FoC pending", "FoC in pipeline"])
