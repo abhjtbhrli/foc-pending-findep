@@ -17,7 +17,7 @@ creds = Credentials.from_service_account_info(
             "https://www.googleapis.com/auth/drive"]
 )
 gc = gspread.authorize(creds)
-sh = gc.open_by_key(SHEET_ID)
+sh = gc.open_by_key(SHEET_ID) 
 
 # get worksheet by gid
 ws = next(ws for ws in sh.worksheets() if str(ws.id) == GID)
