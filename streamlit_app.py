@@ -307,6 +307,7 @@ def pipeline(file1, file2):
                                       'Capital',
                                       'Loans & Advances'))
   pipe['APPROVED AMOUNT'] = pipe['APPROVED AMOUNT'].apply(lambda x:x/100)
+  pipe = pipe[pipe['DH']!='36-00']
   pipex = pipe[['SCHEME CODE2', 'Rev-Cap', 'APPROVED AMOUNT','Days','Excl','Exp','DH']]
   pipex = pipex[pipex['Days']<=15]
   pipex = pipex[pipex['Exp']=='No']
