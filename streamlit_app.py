@@ -206,6 +206,7 @@ def pipeline(file1, file2):
   pipe.columns = pipe.iloc[0].tolist()
   pipe = pipe[2:]
   pipe['DH'] = pipe['HEAD OF ACCOUNT'].str[-5:]
+  pipe = pipe[pipe['DH'].isin(['36-00'])==False]
   pipe['MH'] = pipe['HEAD OF ACCOUNT'].str[:1]
   pipe['ISSUED ON'] = pd.to_datetime(pipe['ISSUED ON'])
   today = pd.to_datetime("today").normalize()
@@ -307,7 +308,7 @@ def pipeline(file1, file2):
                                       'Capital',
                                       'Loans & Advances'))
   pipe['APPROVED AMOUNT'] = pipe['APPROVED AMOUNT'].apply(lambda x:x/100)
-  pipe = pipe[pipe['DH'].isin(['36-00'])==False]
+  
   pipex = pipe[['SCHEME CODE2', 'Rev-Cap', 'APPROVED AMOUNT','Days','Excl','Exp','DH']]
   pipex = pipex[pipex['Days']<=15]
   pipex = pipex[pipex['Exp']=='No']
