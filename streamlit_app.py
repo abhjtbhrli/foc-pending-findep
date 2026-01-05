@@ -260,6 +260,8 @@ def pipeline(file1, file2):
 'FIN/DIS/SWD/011/2025/4371',
 'FIN/DIS/ST/001/2025/623', 'FIN/KAM/CA/001/2025/2374', 'FIN/DIS/HE/001/2025/1005', 'FIN/DIS/HE/001/2025/1006', 'FIN/DIS/ST/001/2025/625', 'FIN/DIS/ST/001/2025/627', 'FIN/DIS/ST/001/2025/628', 'FIN/DIS/ST/001/2025/629', 'FIN/DIS/ST/001/2025/630', 'FIN/NGT/SWD/001/2025/5068', 'FIN/NGT/SWD/001/2025/5077', 'FIN/DIS/SYW/001/2025/1934', 'FIN/DIS/SYW/001/2025/1937', 'FIN/DIS/TRA/001/2025/1263', 'FIN/DIS/WPT/001/2025/2280', 'FIN/DIS/WPT/001/2025/2279', 'FIN/DIS/WPT/001/2025/2282', 'FIN/DIS/SAD/001/2025/4824', 'FIN/DIS/HS/017/2025/2133', 'FIN/DIS/SWD/011/2025/4385', 'FIN/DIS/SWD/011/2025/4386', 'FIN/DIS/SWD/011/2025/4387', 'FIN/DIS/SWD/011/2025/4377', 'FIN/DIS/SWD/011/2025/4388', 'FIN/DIS/WPT/001/2025/2281', 'FIN/KKJ/BTC/001/2025/4418', 'FIN/DPU/KAC/001/2025/3203', 'FIN/DIS/MDB/002/2025/1419', 'FIN/DIS/SWD/003/2025/5076', 'FIN/DIS/AGR/001/2025/1970']
 
+  
+
   pipe['Excl'] = pipe['CEILING NO'].apply(lambda x:"Yes" if x in excl else "No")
 
   foc = pd.read_csv(file2)
@@ -309,7 +311,8 @@ def pipeline(file1, file2):
   pipex = pipex[pipex['Days']<=15]
   pipex = pipex[pipex['Exp']=='No']
   pipex = pipex[pipex['Excl']=='No']
-  csv = pipe[(pipe['Days']<=15) & (pipe['Exp']=='No') & (pipe['Excl']=='No')].to_csv(index=False).encode("utf-8")
+  pipex = pipex[pipex['DH']!='36-00']
+  csv = pipe[(pipe['Days']<=15) & (pipe['Exp']=='No') & (pipe['Excl']=='No') & (pipe['DH']!='36-00')].to_csv(index=False).encode("utf-8")
   pipex_rep = pipex.groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
   pipex_rep_cap = pipex[pipex['Rev-Cap']=='Capital'].groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
   pipex_rep = pipex_rep.merge(pipex_rep_cap, how='left', on='SCHEME CODE2')
