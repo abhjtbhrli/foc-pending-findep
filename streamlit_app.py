@@ -205,6 +205,7 @@ def pipeline(file1, file2):
   pipe = pd.read_excel(file1, engine = "openpyxl")
   pipe.columns = pipe.iloc[0].tolist()
   pipe = pipe[2:]
+  pipe['HEAD OF ACCOUNT'] = pipe['HEAD OF ACCOUNT'].astype(str).str.strip()
   pipe['DH'] = pipe['HEAD OF ACCOUNT'].str[-5:]
   pipe = pipe[pipe['DH'].isin(['36-00'])==False]
   pipe['MH'] = pipe['HEAD OF ACCOUNT'].str[:1]
