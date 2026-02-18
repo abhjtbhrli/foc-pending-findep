@@ -96,7 +96,7 @@ def seniormost(file):
   pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department', 'Public Works (Health and Education) Department']), 'PWD', 'Non PWD')
   SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
   RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
-  TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-FFC', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL', 'TG-CFC']
+  TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
   EE_list = ['EE-CS', 'EE-SS']
 
   pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
@@ -162,7 +162,7 @@ def css_ss(file):
   css_df = pd.read_excel(file, engine = "openpyxl")
   css_df.columns = css_df.iloc[0].tolist()
   css_df = css_df[2:]
-  css_df = css_df[css_df['SCHEME CODE'].isin(['CSS', 'TG-CFC'])]
+  css_df = css_df[css_df['SCHEME CODE'].isin(['CSS', 'TG-CFC', 'TG-FFC'])]
   css_df['MH'] = css_df['HEAD OF ACCOUNT'].str.slice(0,4)
   css_df['MH'] = pd.to_numeric(css_df['MH'])
   css_df['Rev-Cap'] = np.where((css_df['MH']<3999) & (css_df['MH']>=2000),
