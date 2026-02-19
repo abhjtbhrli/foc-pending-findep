@@ -31,8 +31,8 @@ def all_pending(file):
   pend = pend[2:]
   pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department', 'Public Works (Health and Education) Department']), 'PWD', 'Non PWD')
   SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
-  TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-FFC', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL', 'TG-CFC']
+  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS']
+  TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
   EE_list = ['EE-CS', 'EE-SS']
 
   
@@ -95,7 +95,7 @@ def seniormost(file):
   pend = pend[2:]
   pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department', 'Public Works (Health and Education) Department']), 'PWD', 'Non PWD')
   SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
+  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS']
   TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
   EE_list = ['EE-CS', 'EE-SS']
 
