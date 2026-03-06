@@ -304,25 +304,28 @@ def pipeline(file1, file2):
       rows_to_append
   )
 
-  SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS', 'UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
-  TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-FFC', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL', 'TG-CFC']
+  SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP', 'TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
+  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS']
+  TG_list = ['TG-FFC', 'TG-CFC']
   CSS_list = ['CSS', 'SOPD-SS', 'EE-CS', 'EE-SS']
   EAP_list = ['EAP', 'EAP-SS']
   NIDA_list = ['NIDA-LS', 'NIDA-SS']
+  UIDF_SCDF_list = ['UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
   pipe['SCHEME CODE2'] = np.where(pipe['SCHEME CODE'].isin(SOPD_list),
-                                   'SOPD',
+                                   'SOPD-G, SOPD-GSP, TG',
                                    np.where(pipe['SCHEME CODE'].isin(RIDF_list),
                                             'RIDF',
                                             np.where(pipe['SCHEME CODE'].isin(TG_list),
-                                                     'TG',
+                                                     'TG 15th FC',
                                                      np.where(pipe['SCHEME CODE'].isin(CSS_list),
                                                               'CSS',
                                                               np.where(pipe['SCHEME CODE'].isin(EAP_list),
                                                                        'EAP',
                                                                        np.where(pipe['SCHEME CODE'].isin(NIDA_list),
                                                                                 'NIDA',
-                                                                                pipe['SCHEME CODE']))))))
+                                                                                np.where(pipe['SCHEME CODE'].isin(UIDF_SCDF_list),
+                                                                                         'UIDF & SCDF',
+                                                                                         pipe['SCHEME CODE'])))))))
   pipe['Rev-Cap'] = np.where(pipe['MH'].isin(['2','3']),
                              'Revenue',
                              np.where(pipe['MH'].isin(['4','5']),
