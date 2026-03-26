@@ -338,7 +338,7 @@ def pipeline(file1, file2):
       rows_to_append
   )
 
-  SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP', 'TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
+  SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP', 'TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
   RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS']
   TG_list = ['TG-FFC', 'TG-CFC']
   CSS_list = ['CSS', 'SOPD-SS', 'EE-CS', 'EE-SS']
@@ -346,7 +346,7 @@ def pipeline(file1, file2):
   NIDA_list = ['NIDA-LS', 'NIDA-SS']
   UIDF_SCDF_list = ['UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
   pipe['SCHEME CODE2'] = np.where(pipe['SCHEME CODE'].isin(SOPD_list),
-                                   'SOPD-G, SOPD-GSP, TG',
+                                   'SOPD-G, TG',
                                    np.where(pipe['SCHEME CODE'].isin(RIDF_list),
                                             'RIDF',
                                             np.where(pipe['SCHEME CODE'].isin(TG_list),
