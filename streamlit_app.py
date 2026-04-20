@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from google.oauth2.service_account import Credentials
 import gspread
-from excl import EXCL
+import excl as e
 
 st.set_page_config(
         page_title="CDM Ceiling reports",
@@ -30,30 +30,27 @@ def all_pending(file):
   pend = pd.read_excel(file, engine = "openpyxl")
   pend.columns = pend.iloc[0].tolist()
   pend = pend[2:]
-  pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department', 'Public Works (Health and Education) Department']), 'PWD', 'Non PWD')
-  SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS']
-  TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
-  EE_list = ['EE-CS', 'EE-SS']
-
-  
-  pend['SCHEME NAME2'] = np.where(pend['SCHEME CODE'].isin(['CSS', 'SOPD-SS']),
+  pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(e.PWD), 'PWD', 'Non PWD')
+    
+  pend['SCHEME NAME2'] = np.where(pend['SCHEME CODE'].isin(e.CSS_list),
                                 'CSS',
-                                np.where(pend['SCHEME CODE'].isin(['EAP', 'EAP-SS']),
+                                np.where(pend['SCHEME CODE'].isin(e.EAP_list),
                                          'EAP',
-                                         np.where(pend['SCHEME CODE'].isin(['NIDA-LS', 'NIDA-SS']),
+                                         np.where(pend['SCHEME CODE'].isin(e.NIDA_list),
                                                   'NIDA',
-                                                  np.where(pend['SCHEME CODE'].isin(RIDF_list),
+                                                  np.where(pend['SCHEME CODE'].isin(e.RIDF_list),
                                                                                     'RIDF',
-                                                                                    np.where(pend['SCHEME CODE'].isin(SOPD_list),
+                                                                                    np.where(pend['SCHEME CODE'].isin(e.SOPD_list),
                                                                                              'SOPD',
-                                                                                             np.where(pend['SCHEME CODE'].isin(TG_list),
+                                                                                             np.where(pend['SCHEME CODE'].isin(e.TG_list),
                                                                                                       'TG',
                                                                                                       np.where(pend['SCHEME CODE']=='EE',
                                                                                                                'EE',
-                                                                                                               np.where(pend['SCHEME CODE'].isin(EE_list),
-                                                                                                                        'EE (CS + SS)',
-                                                                                                                        pend['SCHEME CODE']))))))))
+                                                                                                               np.where(pend['SCHEME CODE'].isin(e.UIDF_list),
+                                                                                                                        'UIDF',
+                                                                                                                        np.where(pend['SCHEME CODE'].isin(e.SCDF_list),
+                                                                                                                                 'SCDF',
+                                                                                                                                 pend['SCHEME CODE'])))))))))
   
   pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
   pend['MH'] = pd.to_numeric(pend['MH'])
@@ -62,8 +59,8 @@ def all_pending(file):
                            np.where((pend['MH']<5999) & (pend['MH']>=4000),
                                     'Capital',
                                     'Loans & Advances'))
-  SENIORMOST_list = ['Mr.Dilip Kumar BorahIAS,Secretary', 'Mr.JayantNarlikar , IAS ,Commissioner & Secretary', 'Mr.Hemanta Kumar Dewri,Special Secretary']
-  pend['Hierarchy'] = np.where(pend['HELD BY'].isin(SENIORMOST_list), 'Seniormost', 'Non Seniormost')
+  
+  pend['Hierarchy'] = np.where(pend['HELD BY'].isin(e.SENIORMOST_list), 'Seniormost', 'Non Seniormost')
   pend['REQUESTED AMOUNT'] = pend['REQUESTED AMOUNT'].apply(lambda x:x/100)
 
   df1 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['SCHEME NAME2']!='SOPD')].groupby(['SCHEME NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
@@ -96,12 +93,7 @@ def seniormost(file):
   pend = pd.read_excel(file, engine = "openpyxl")
   pend.columns = pend.iloc[0].tolist()
   pend = pend[2:]
-  pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department', 'Public Works (Health and Education) Department']), 'PWD', 'Non PWD')
-  SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-GSP', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS']
-  TG_list = ['TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
-  EE_list = ['EE-CS', 'EE-SS']
-
+  pend['DEPARTMENT NAME2'] = np.where(pend['DEPARTMENT NAME'].isin(e.PWD), 'PWD', 'Non PWD')
   pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
   pend['MH'] = pd.to_numeric(pend['MH'])
   pend['Rev-Cap'] = np.where((pend['MH']<3999) & (pend['MH']>=2000),
@@ -109,23 +101,25 @@ def seniormost(file):
                            np.where((pend['MH']<5999) & (pend['MH']>=4000),
                                     'Capital',
                                     'Loans & Advances'))
-  pend['SCHEME NAME2'] = np.where(pend['SCHEME CODE'].isin(['CSS', 'SOPD-SS']),
+  pend['SCHEME NAME2'] = np.where(pend['SCHEME CODE'].isin(e.CSS_list),
                                 'CSS',
-                                np.where(pend['SCHEME CODE'].isin(['EAP', 'EAP-SS']),
+                                np.where(pend['SCHEME CODE'].isin(e.EAP_list),
                                          'EAP',
-                                         np.where(pend['SCHEME CODE'].isin(['NIDA-LS', 'NIDA-SS']),
+                                         np.where(pend['SCHEME CODE'].isin(e.NIDA_list),
                                                   'NIDA',
-                                                  np.where(pend['SCHEME CODE'].isin(RIDF_list),
+                                                  np.where(pend['SCHEME CODE'].isin(e.RIDF_list),
                                                                                     'RIDF',
-                                                                                    np.where(pend['SCHEME CODE'].isin(SOPD_list),
-                                                                                             'SOPD',
-                                                                                             np.where(pend['SCHEME CODE'].isin(TG_list),
-                                                                                                      'TG',
+                                                                                    np.where(pend['SCHEME CODE'].isin(e.SOPD_list),
+                                                                                             'SOPD-G, TG',
+                                                                                             np.where(pend['SCHEME CODE'].isin(e.TG_list),
+                                                                                                      'TG Central FC',
                                                                                                       np.where(pend['SCHEME CODE']=='EE',
                                                                                                                'EE',
-                                                                                                               np.where(pend['SCHEME CODE'].isin(EE_list),
-                                                                                                                        'EE (CS + SS)',
-                                                                                                                        pend['SCHEME CODE']))))))))
+                                                                                                               np.where(pend['SCHEME CODE'].isin(e.UIDF_list),
+                                                                                                                        'UIDF',
+                                                                                                                        np.where(pend['SCHEME CODE'].isin(e.SCDF_list),
+                                                                                                                                 'SCDF',
+                                                                                                                                 pend['SCHEME CODE'])))))))))
   
   pend['MH'] = pend['HEAD OF ACCOUNT'].str.slice(0,4)
   pend['MH'] = pd.to_numeric(pend['MH'])
@@ -134,8 +128,8 @@ def seniormost(file):
                            np.where((pend['MH']<5999) & (pend['MH']>=4000),
                                     'Capital',
                                     'Loans & Advances'))
-  SENIORMOST_list = ['Mr.Dilip Kumar BorahIAS,Secretary', 'Mr.JayantNarlikar , IAS ,Commissioner & Secretary', 'Mr.Hemanta Kumar Dewri,Special Secretary']
-  pend['Hierarchy'] = np.where(pend['HELD BY'].isin(SENIORMOST_list), 'Seniormost', 'Non Seniormost')
+  
+  pend['Hierarchy'] = np.where(pend['HELD BY'].isin(e.SENIORMOST_list), 'Seniormost', 'Non Seniormost')
   pend['REQUESTED AMOUNT'] = pend['REQUESTED AMOUNT'].apply(lambda x:x/100)
 
   df1 = pend[(pend['SCHEME NAME2']!='CSS') & (pend['Hierarchy']=='Seniormost') & (pend['SCHEME NAME2']!='SOPD')].groupby(['SCHEME NAME2'])['REQUESTED AMOUNT'].sum().round(2).reset_index()
@@ -215,7 +209,7 @@ def pipeline(file1, file2):
   pipe['ISSUED ON'] = pd.to_datetime(pipe['ISSUED ON'])
   today = pd.to_datetime("today").normalize()
   pipe["Days"] = (today - pipe["ISSUED ON"]).dt.days
-  excl = EXCL
+  excl = e.EXCL
 
   
 
@@ -239,28 +233,30 @@ def pipeline(file1, file2):
       rows_to_append
   )
 
-  SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP', 'TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
-  RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS']
-  TG_list = ['TG-FFC', 'TG-CFC']
-  CSS_list = ['CSS', 'SOPD-SS', 'EE-CS', 'EE-SS']
-  EAP_list = ['EAP', 'EAP-SS']
-  NIDA_list = ['NIDA-LS', 'NIDA-SS']
-  UIDF_SCDF_list = ['UIDF-LS', 'UIDF-SS', 'SCDF-LS', 'SCDF-SS']
-  pipe['SCHEME CODE2'] = np.where(pipe['SCHEME CODE'].isin(SOPD_list),
+  
+  pipe['SCHEME CODE2'] = np.where(pipe['SCHEME CODE'].isin(e.SOPD_list),
                                    'SOPD-G, TG',
-                                   np.where(pipe['SCHEME CODE'].isin(RIDF_list),
+                                   np.where(pipe['SCHEME CODE'].isin(e.RIDF_list),
                                             'RIDF',
-                                            np.where(pipe['SCHEME CODE'].isin(TG_list),
-                                                     'TG 15th FC',
-                                                     np.where(pipe['SCHEME CODE'].isin(CSS_list),
+                                            np.where(pipe['SCHEME CODE'].isin(e.TG_list),
+                                                     'TG Central FC',
+                                                     np.where((pipe['SCHEME CODE'].isin(e.CSS_list)) & (pipe['DH'][0:2]!='31'),
                                                               'CSS',
-                                                              np.where(pipe['SCHEME CODE'].isin(EAP_list),
+                                                              np.where(pipe['SCHEME CODE'].isin(e.EAP_list),
                                                                        'EAP',
-                                                                       np.where(pipe['SCHEME CODE'].isin(NIDA_list),
+                                                                       np.where(pipe['SCHEME CODE'].isin(e.NIDA_list),
                                                                                 'NIDA',
-                                                                                np.where(pipe['SCHEME CODE'].isin(UIDF_SCDF_list),
-                                                                                         'UIDF & SCDF',
-                                                                                         pipe['SCHEME CODE'])))))))
+                                                                                np.where(pipe['SCHEME CODE'].isin(e.UIDF_list),
+                                                                                         'UIDF',
+                                                                                         np.where(pipe['SCHEME CODE'].isin(e.SCDF_list),
+                                                                                                  'SCDF',
+                                                                                                  np.where((pipe['SCHEME CODE']=='EE') & (pipe['DH'][0:2]!='31'),
+                                                                                                           'EE',
+                                                                                                           np.where((pipe['SCHEME CODE']=='EE') & (pipe['DH'][0:2]=='31'),
+                                                                                                                    'EE Salary',
+                                                                                                                    np.where((pipe['SCHEME CODE'].isin(e.CSS_list)) & (pipe['DH'][0:2]=='31'),
+                                                                                                                             'CSS Salary',
+                                                                                                                             pipe['SCHEME CODE'])))))))))))
   pipe['Rev-Cap'] = np.where(pipe['MH'].isin(['2','3']),
                              'Revenue',
                              np.where(pipe['MH'].isin(['4','5']),
