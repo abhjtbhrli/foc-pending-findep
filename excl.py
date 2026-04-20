@@ -4,11 +4,14 @@ EXCL = [
 ]
 
 
-PWD = ['Public Works (Buildings & NH) Department', 'Public Works (Roads) Department', 'Public Works (Health and Education) Department']
+PWD = ['Public Works (Buildings & NH) Department', 
+       'Public Works (Roads) Department', 
+       'Public Works (Health and Education) Department']
 
 
 
-SENIORMOST_list = ['Mr.Dilip Kumar BorahIAS,Secretary', 'Mr.JayantNarlikar , IAS ,Commissioner & Secretary']
+SENIORMOST_list = ['Mr.Dilip Kumar BorahIAS,Secretary', 
+                   'Mr.JayantNarlikar , IAS ,Commissioner & Secretary']
 
 SOPD_list = ['SOPD-FDR', 'SOPD-G', 'SOPD-ODS', 'SOPD-SCSP', 'SOPD-TSP', 'TG-AC', 'TG-DC', 'TG-EI', 'TG-IB', 'TG-SFC', 'TG-SSA', 'TG-UL']
 RIDF_list = ['RIDF-LS', 'RIDF-SS', 'WIF-LS', 'WIF-SS']
