@@ -80,7 +80,7 @@ def all_pending(file):
   df3.loc[len(df3)] = ['Total', '', df3['REQUESTED AMOUNT'].sum().round(2), pend[(pend['SCHEME NAME2']!='CSS') & (pend['Rev-Cap']=='Capital')]['REQUESTED AMOUNT'].sum().round(2)]
   
   df3.columns = ['Scheme', 'Dept', 'Requested amount (Cr.)', 'Capital (Cr.)']
-  df3.loc[len(df3)] = ['2cr+ SOPD, NIDA Capex', '', pend[(pend['SCHEME CODE'].isin['SOPD_list','NIDA_list']) & (pend['Rev-Cap']=='Capital') & (pend['REQUESTED AMOUNT']>=2)]['REQUESTED AMOUNT'].sum().round(2),'']
+  df3.loc[len(df3)] = ['2cr+ SOPD, NIDA Capex', '', pend[(pend['SCHEME CODE'].isin([e.SOPD_list,e.NIDA_list])) & (pend['Rev-Cap']=='Capital') & (pend['REQUESTED AMOUNT']>=2)]['REQUESTED AMOUNT'].sum().round(2),'']
   try:
     df3.fillna('', inplace=True)
     return df3
