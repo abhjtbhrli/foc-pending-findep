@@ -271,8 +271,8 @@ def pipeline(file1, file2):
   pipex = pipex[pipex['Days']<=15]
   pipex = pipex[pipex['Exp']=='No']
   pipex = pipex[pipex['Excl']=='No']
-  pipex = pipex[pipex['DH'].isin(['36-00', '12-00'])=False] 
-  csv = pipe[(pipe['Days']<=15) & (pipe['Exp']=='No') & (pipe['Excl']=='No') & (pipe['DH'].isin(['36-00', '12-00'])=False)].to_csv(index=False).encode("utf-8")
+  pipex = pipex[pipex['DH'].isin(['36-00', '12-00'])==False] 
+  csv = pipe[(pipe['Days']<=15) & (pipe['Exp']=='No') & (pipe['Excl']=='No') & (pipe['DH'].isin(['36-00', '12-00'])==False)].to_csv(index=False).encode("utf-8")
   pipex_rep = pipex.groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
   pipex_rep_cap = pipex[pipex['Rev-Cap']=='Capital'].groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
   pipex_rep = pipex_rep.merge(pipex_rep_cap, how='left', on='SCHEME CODE2')
