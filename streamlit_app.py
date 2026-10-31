@@ -207,7 +207,7 @@ def pipeline(file1, file2):
   pipe = pipe[2:]
   pipe['HEAD OF ACCOUNT'] = pipe['HEAD OF ACCOUNT'].astype(str).str.strip()
   pipe['DH'] = pipe['HEAD OF ACCOUNT'].str[-5:]
-  pipe = pipe[pipe['DH'].isin(['36-00'])==False]
+  pipe = pipe[pipe['DH'].isin(['36-00', '12-00'])==False]
   pipe['MH'] = pipe['HEAD OF ACCOUNT'].str[:1]
   pipe['ISSUED ON'] = pd.to_datetime(pipe['ISSUED ON'])
   today = pd.to_datetime("today").normalize()
@@ -271,8 +271,8 @@ def pipeline(file1, file2):
   pipex = pipex[pipex['Days']<=15]
   pipex = pipex[pipex['Exp']=='No']
   pipex = pipex[pipex['Excl']=='No']
-  pipex = pipex[pipex['DH']!='36-00'] 
-  csv = pipe[(pipe['Days']<=15) & (pipe['Exp']=='No') & (pipe['Excl']=='No') & (pipe['DH']!='36-00')].to_csv(index=False).encode("utf-8")
+  pipex = pipex[pipex['DH'].isin(['36-00', '12-00'])=False] 
+  csv = pipe[(pipe['Days']<=15) & (pipe['Exp']=='No') & (pipe['Excl']=='No') & (pipe['DH'].isin(['36-00', '12-00'])=False)].to_csv(index=False).encode("utf-8")
   pipex_rep = pipex.groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
   pipex_rep_cap = pipex[pipex['Rev-Cap']=='Capital'].groupby(['SCHEME CODE2'])['APPROVED AMOUNT'].sum().round(2).reset_index()
   pipex_rep = pipex_rep.merge(pipex_rep_cap, how='left', on='SCHEME CODE2')
